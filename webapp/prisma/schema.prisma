@@ -13,11 +13,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Beer {
+  id          Int   @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String
+  commands    Command[]
+}
+
+model Table {
+  id        Int   @id @default(autoincrement())
+  status    Boolean
+  capacity  Float
+  commands  Command[]
+}
+
+model Command {
+  id        Int   @id @default(autoincrement())
+  nb_beers  Int
+  beer_id   Int @unique
+  beer      Beer @relation(fields: [beer_id], references: [id])
+  date      DateTime
+  table_id  Int @unique
+  table     Table @relation(fields: [table_id], references: [id])
+  price     Float
 }

@@ -2,26 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/utils/prisma";
 
 export async function GET(req: NextRequest, res: NextResponse) {
-  const users = await prisma.user.findMany();
-  return Response.json(users);
+  const beers = await prisma.beer.findMany();
+  return NextResponse.json(beers, { status: 200 });
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  const { email, name, password } = await req.json();
+  const { name, description, price, image } = await req.json();
   try {
-    const user = await prisma.user.create({
+    const beer = await prisma.beer.create({
       data: {
-        email: email,
-        name: name,
-        password: password,
+        name,
+        description,
+        price,
+        image,
       },
     });
-    return Response.json(user);
+    return NextResponse.json(beer, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return Response.json({ error: error.message });
+      return NextResponse.json({ error: error.message }, { status: 400 });
     } else {
-      return Response.json({ error: "An unknown error occurred" });
+      return NextResponse.json({ error: "An error occurred" }, { status: 500 });
     }
   }
 }
