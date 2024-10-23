@@ -36,7 +36,27 @@ async function main() {
       },
     ],
   });
-  console.log(beers, tables);
+
+  const beersList = await prisma.beer.findMany();
+  const tablesList = await prisma.table.findMany();
+
+  const commands = await prisma.command.createMany({
+    data: Array.from({ length: 20 }).map((_, index) => {
+      const randomBeer = beersList[Math.floor(Math.random() * beersList.length)];
+      const randomTable = tablesList[Math.floor(Math.random() * tablesList.length)];
+      const nb_beers = Math.floor(Math.random() * 10) + 1;
+
+      return {
+        nb_beers: nb_beers,
+        beer_id: randomBeer.id,
+        table_id: randomTable.id,
+        date: new Date(),
+        price: randomBeer.price * nb_beers, 
+      };
+    }),
+  });
+
+  console.log(beers, tables, commands);
 }
 
 main()
