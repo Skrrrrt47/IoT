@@ -44,13 +44,14 @@ async function main() {
     data: Array.from({ length: 20 }).map((_, index) => {
       const randomBeer = beersList[Math.floor(Math.random() * beersList.length)];
       const randomTable = tablesList[Math.floor(Math.random() * tablesList.length)];
-      
+      const nb_beers = Math.floor(Math.random() * 10) + 1;
+
       return {
-        nb_beers: Math.floor(Math.random() * 10) + 1, // Nombre de bières entre 1 et 10
+        nb_beers: nb_beers,
         beer_id: randomBeer.id,
         table_id: randomTable.id,
         date: new Date(),
-        price: randomBeer.price * (Math.floor(Math.random() * 10) + 1), // Prix total aléatoire
+        price: randomBeer.price * nb_beers, 
       };
     }),
   });

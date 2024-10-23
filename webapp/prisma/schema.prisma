@@ -32,10 +32,10 @@ model Table {
 model Command {
   id        Int   @id @default(autoincrement())
   nb_beers  Int
-  beer_id   Int @unique
+  beer_id   Int
   beer      Beer @relation(fields: [beer_id], references: [id])
   date      DateTime
-  table_id  Int @unique
+  table_id  Int
   table     Table @relation(fields: [table_id], references: [id])
   price     Float
 }
