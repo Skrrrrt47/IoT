@@ -12,4 +12,11 @@ export interface Table {
   capacity: number;
 }
 
-export interface Command {}
+export interface Command {
+  id: number;
+  nb_beers: number;
+  beer_id: number;
+  date: Date;
+  table_id: number;
+  price: number;
+}
