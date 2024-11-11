@@ -4,11 +4,9 @@ import Link from "next/link";
 import {
   ClerkProvider,
   RedirectToSignIn,
-  SignInButton,
   SignOutButton,
   SignedIn,
   SignedOut,
-  UserButton,
 } from "@clerk/nextjs";
 import "./globals.css";
 

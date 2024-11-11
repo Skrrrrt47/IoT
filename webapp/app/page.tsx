@@ -1,55 +1,69 @@
 "use client";
+import { Table } from "./types/type";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Beer } from "./types/type";
 import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-export default function Home() {
-  const [data, setData] = useState<Beer[] | null>(null);
-  const { isSignedIn, user, isLoaded } = useUser()
+export default function TableList() {
+  const router = useRouter();
+  const [tables, setTables] = useState<Table[]>([]);
+
+  const { isSignedIn, user, isLoaded } = useUser();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTables = async () => {
       try {
-        const response = await fetch("/api");
+        // Fetch the tables
+        const response = await fetch("/api/tables");
         const json = await response.json();
-        setData(json);
         console.log(json);
+        setTables(json);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchData();
 
-    console.log(user);
-  }, []);
+    fetchTables();
+  }, []); // Run only once when the component mounts
 
-  if (!isLoaded || !user) return <p>Loading...</p>;
+  // Wait for the user data to load
+  if (!isLoaded) {
+    return <p>Loading...</p>;
+  }
+
+  // Handle user not signed in
+  if (!user) {
+    return <p>User not found. Please sign in.</p>;
+  }
 
   const userRole = user.publicMetadata.role;
 
+  // Redirect if userRole is not "client"
+  if (userRole !== "client") {
+    redirect("/backoffice");
+    return null; // Prevent further rendering
+  }
+
+  const handleTableClick = (tableId: number) => {
+    router.push(`/tables/${tableId}`);
+  };
+
   return (
-    <>
-      {userRole  === "client" ? (
-        <div className="flex flex-wrap justify-center gap-6 p-6">
-          {data && data.map((beer: Beer) => (
-            <div key={beer.id} className="w-80 border border-gray-200 rounded-lg p-4 bg-white shadow-lg">
-              <img src={beer.image} alt={beer.name} className="w-full h-auto mb-4" />
-              <div className="beer-info text-black">
-                <h2 className="text-lg font-bold">{beer.name}</h2>
-                <p className="text-sm">{beer.description}</p>
-                <p className="text-lg font-semibold mt-2">{beer.price} €</p>
-                <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-300">
-                  Commander
-                </button>
-              </div>
-            </div>
-          ))}
+    <div className="flex flex-wrap justify-center gap-6 p-6 w-full">
+      {tables && tables.map((table: Table) => (
+        <div key={table.id} className="w-80 border border-gray-200 rounded-lg p-4 bg-white shadow-lg">
+          <div className="beer-info text-black">
+            <h2 className="text-lg font-bold">{table.id}</h2>
+            <button
+              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-300"
+              onClick={() => handleTableClick(table.id)}
+            >
+              Use
+            </button>
+          </div>
         </div>
-      ) : 
-      <>
-        {redirect("/backoffice")}
-      </>}
-    </>
+      ))}
+    </div>
   );
 }
