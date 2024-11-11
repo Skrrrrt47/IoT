@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Beer, Command } from "../types/type";
-import { comma } from "postcss/lib/list";
 
 export default function Home() {
   const [data, setData] = useState<Command[] | null>(null);
