@@ -1,21 +1,40 @@
 services:
   web:
     image: node:20
-    entrypoint: ["sh", "-c","cd /app; npm install; npx prisma generate; npx prisma migrate dev --name init; npm run dev"]
+    entrypoint:
+      [
+        "sh",
+        "-c",
+        "cd /app; npm install; npx prisma generate; npx prisma migrate dev --name init; npm run dev",
+      ]
     ports:
       - "3000:3000"
     container_name: web-iot
     volumes:
       - ./webapp:/app
 
-  postgres:
+  backend:
+    image: node:20
+    container_name: backend
+    entrypoint: ["sh", "-c", "cd app; npm install; npm start"]
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - postgres-db
+
+  postgres-db:
     image: postgres:16
-    container_name: postgres-iot
+    container_name: postgres-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: iot
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
     ports:
       - "5432:5432"
     volumes:
-      - /postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
