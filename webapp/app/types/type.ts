@@ -3,7 +3,7 @@ export interface Beer {
   name: string;
   description: string;
   price: number;
-  image: string;
+  urlImg: string;
 }
 
 export interface Table {
@@ -14,9 +14,9 @@ export interface Table {
 
 export interface Command {
   id: number;
-  nb_beers: number;
-  beer_id: number;
+  nbBeers: number;
+  beerId: number;
   date: Date;
-  table_id: number;
+  tableId: number;
   price: number;
 }

@@ -7,7 +7,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/backoffice");
+        const response = await fetch("http://localhost:3001/commands");
         const json = await response.json();
         setData(json);
         console.log(json);
@@ -23,8 +23,8 @@ export default function Home() {
       {data &&
         data.map((command: Command) => (
           <div key={command.id}>
-            <h2>{command.nb_beers}</h2>
-            <p>{command.beer_id}</p>
+            <h2>{command.nbBeers}</h2>
+            <p>{command.beerId}</p>
             <p>{command.price}</p>
           </div>
         ))}

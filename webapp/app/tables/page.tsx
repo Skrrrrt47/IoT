@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from 'next/navigation';
-import Beer_Command from "../../components/Beer_Command";
+import Beer_Command from "../components/Beer_Command";
 
 
 

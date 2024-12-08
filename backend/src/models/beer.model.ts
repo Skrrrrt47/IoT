@@ -34,6 +34,12 @@ export class Beer extends Entity {
   })
   id?: number;
 
+  @property({
+    type: 'number',
+    required: true,
+  })
+  price: number;
+
   @hasMany(() => Command)
   commands: Command[];
 

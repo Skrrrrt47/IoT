@@ -15,7 +15,7 @@ export default function TableList() {
     const fetchTables = async () => {
       try {
         // Fetch the tables
-        const response = await fetch("/api/tables");
+        const response = await fetch("http://localhost:3001/tables");
         const json = await response.json();
         console.log(json);
         setTables(json);
@@ -46,7 +46,7 @@ export default function TableList() {
   }
 
   const handleTableClick = (tableId: number) => {
-    router.push(`/tables/${tableId}`);
+    router.push(`/tables?tableId=${tableId}`);
   };
 
   return (

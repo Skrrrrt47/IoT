@@ -8,7 +8,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/tables");
+        const response = await fetch("http://localhost:3001//tables");
         const json = await response.json();
         setTables(json);
       } catch (error) {
