@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Beer, Command } from "../types/type";
+import { Table } from "../types/type";
+import CardTables from "../components/CardTables";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [data, setData] = useState<Command[] | null>(null);
+  const [data, setData] = useState<Table[] | null>(null);
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/commands");
+        const response = await fetch("http://localhost:3001/tables");
         const json = await response.json();
         setData(json);
         console.log(json);
@@ -18,16 +21,17 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const handleClick = (id: number) => {
+    router.push(`/backoffice/tables?tableId=${id}`);
+  }
+
   return (
-    <div>
-      {data &&
-        data.map((command: Command) => (
-          <div key={command.id}>
-            <h2>{command.nbBeers}</h2>
-            <p>{command.beerId}</p>
-            <p>{command.price}</p>
-          </div>
-        ))}
+    <div className="min-h-screen flex flex-row items-center justify-center p-6 gap-6 bg-gray-800">
+      {data && data.map((table: Table) => (
+        <button key={table.id} onClick={() => handleClick(table.id)}>
+          <CardTables  status={table.status} capacity={table.capacity} id={table.id} />
+        </button>
+      ))}
     </div>
   );
 }

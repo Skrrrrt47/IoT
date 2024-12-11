@@ -50,7 +50,7 @@ export default function TableList() {
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-6 p-6 w-full">
+    <div className="min-h-screen flex flex-row items-center justify-center p-6 gap-6 bg-gray-800">
       {tables && tables.map((table: Table) => (
         <div key={table.id} className="w-80 border border-gray-200 rounded-lg p-4 bg-white shadow-lg">
           <div className="beer-info text-black">

@@ -44,7 +44,7 @@ export default function Beer_Command({ tableId }: { tableId: string }) {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-800">
       <div className="flex flex-wrap justify-center gap-6 p-6 w-full max-w-6xl">
         {data &&
           data.map((beer: Beer) => (
