@@ -74,5 +74,7 @@ export class AddDataObserver implements LifeCycleObserver {
    */
   async stop(): Promise<void> {
     // Add your logic for stop
+    this.salesRepo.deleteAll();
+    this.beerRepo.deleteAll();
   }
 }
