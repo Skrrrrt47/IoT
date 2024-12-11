@@ -40,10 +40,6 @@ export default function TableList() {
   const userRole = user.publicMetadata.role;
 
   // Redirect if userRole is not "client"
-  if (userRole !== "client") {
-    redirect("/backoffice");
-    return null; // Prevent further rendering
-  }
 
   const handleTableClick = (tableId: number) => {
     router.push(`/tables?tableId=${tableId}`);
