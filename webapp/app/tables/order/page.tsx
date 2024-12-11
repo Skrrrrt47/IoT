@@ -50,7 +50,7 @@ export default function OrderPayment() {
   const handlePayment = async () => {
     // add payment logic here
 
-    router.push("/tables/order/done")
+    router.push("/tables/order/done?tableId=" + orderDetails?.tableId);
   };
 
   return (

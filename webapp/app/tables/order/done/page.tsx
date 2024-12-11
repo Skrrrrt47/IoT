@@ -1,15 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function FillBeer() {
   const [filling, setFilling] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const tableId = searchParams.get("tableId");
 
   useEffect(() => {
     setFilling(true);
     const timer = setTimeout(() => {
       setLoaded(true);
       setFilling(false);
+      router.push(`/tables?tableId=${tableId}`);
     }, 10 * 1000); // 4 seconds for beer to fill
 
     return () => clearTimeout(timer);
