@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 
 function TableDetails() {
   const searchParams = useSearchParams();
-  const tableId = searchParams.get("tableId");
   const [commands, setCommands] = useState<Command[] | null>(null);
 
   const [total, setTotal] = useState(0);
@@ -38,16 +37,13 @@ function TableDetails() {
       try {
         const response = await fetch(`http://localhost:3001/commands/`);
         const data = await response.json();
-        const filteredData = data.filter(
-          (command: Command) => command.tableId === parseInt(tableId!)
-        );
-        setCommands(filteredData);
+        setCommands(data);
       } catch (error) {
         console.error("Error fetching commands:", error);
       }
     };
     fetchCommands();
-  }, [tableId]);
+  }, []);
 
   useEffect(() => {
     const fetchCommands = async () => {
@@ -88,9 +84,7 @@ function TableDetails() {
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center bg-gray-700">
-      <h1 className="text-2xl font-bold mb-4 text-white">
-        Table Details n°{tableId}
-      </h1>
+      <h1 className="text-2xl font-bold mb-4 text-white">All Tables</h1>
       <div className="flex flex-row items-center gap-10">
         <img
           className="w-10 h-10 inline-block align-middle"
