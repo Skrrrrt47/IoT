@@ -13,7 +13,7 @@ function TableDetails() {
   const [capacity, setCapacity] = useState(0);
   const [popularBeer, setPopularBeer] = useState<Beer | null>(null);
   const [nbTables, setNbTables] = useState(0);
-
+  const [nbAvailableTables, setNbAvailableTables] = useState(0);
   function getMostFrequentBeerId(commands: Command[]): number | null {
     const beerCounts: Record<number, number> = {};
     for (const command of commands) {
@@ -51,6 +51,17 @@ function TableDetails() {
         const response = await fetch(`http://localhost:3001/tables/count`);
         const data = await response.json();
         setNbTables(data.count);
+        try {
+          const response = await fetch(`http://localhost:3001/tables`);
+          const data = await response.json();
+          let availableTablesCounter = 0;
+          data.forEach((element: { status: boolean }) => {
+            element.status ? availableTablesCounter++ : 0;
+          });
+          setNbAvailableTables(availableTablesCounter);
+        } catch (error) {
+          console.error("Error fetching commands:", error);
+        }
       } catch (error) {
         console.error("Error fetching commands:", error);
       }
@@ -91,16 +102,20 @@ function TableDetails() {
           src={"/arrow-bar-left-svgrepo-com.svg"}
         />
         <StatBox icon={"/circle.svg"} title="CA Total" value={total} />
-        <StatBox icon={"/circle.svg"} title="Beers Served" value={capacity} />
         <StatBox
           icon={"/circle.svg"}
-          title="Most Popular Beer"
+          title="Total des Bières Servies"
+          value={capacity}
+        />
+        <StatBox
+          icon={"/circle.svg"}
+          title="Bière la plus Populaire"
           value={popularBeer?.name ?? ""}
         />
         <StatBox
           icon={"/circle.svg"}
-          title="Operational Tables"
-          value={nbTables ? nbTables : ""}
+          title="Tables Opérationnelles"
+          value={nbTables ? nbAvailableTables + "/" + nbTables : ""}
         />
         <img
           className="w-10 h-10 inline-block align-middle"

@@ -11,9 +11,9 @@ function TableDetails() {
   const [commands, setCommands] = useState<Command[] | null>(null);
 
   const [total, setTotal] = useState(0);
-  const [capacity, setCapacity] = useState(0);
+  const [orders, setorders] = useState(0);
   const [popularBeer, setPopularBeer] = useState<Beer | null>(null);
-  const [nbTables, setNbTables] = useState(0);
+  const [capacity, setcapacity] = useState(0);
 
   function getMostFrequentBeerId(commands: Command[]): number | null {
     const beerCounts: Record<number, number> = {};
@@ -52,9 +52,9 @@ function TableDetails() {
   useEffect(() => {
     const fetchCommands = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/tables/count`);
+        const response = await fetch(`http://localhost:3001/tables/${tableId}`);
         const data = await response.json();
-        setNbTables(data.count);
+        setcapacity(data.capacity);
       } catch (error) {
         console.error("Error fetching commands:", error);
       }
@@ -67,11 +67,11 @@ function TableDetails() {
       console.log(commands);
       const total = commands.reduce((acc, command) => acc + command.price, 0);
       setTotal(total);
-      const capacity = commands.reduce(
+      const orders = commands.reduce(
         (acc, command) => acc + command.nbBeers,
         0
       );
-      setCapacity(capacity);
+      setorders(orders);
       const mostFrequentBeerId = getMostFrequentBeerId(commands);
       if (mostFrequentBeerId) {
         const fetchPopularBeer = async () => {
@@ -96,17 +96,17 @@ function TableDetails() {
           className="w-10 h-10 inline-block align-middle"
           src={"/arrow-bar-left-svgrepo-com.svg"}
         />
-        <StatBox icon={"/circle.svg"} title="CA Total" value={total} />
-        <StatBox icon={"/circle.svg"} title="Beers Served" value={capacity} />
+        <StatBox icon={"/circle.svg"} title="CA" value={total + " €"} />
+        <StatBox icon={"/circle.svg"} title="Bières Servies" value={orders} />
         <StatBox
           icon={"/circle.svg"}
-          title="Most Popular Beer"
+          title="Bière la plus Populaire"
           value={popularBeer?.name ?? ""}
         />
         <StatBox
           icon={"/circle.svg"}
-          title="Operational Tables"
-          value={nbTables ? nbTables : ""}
+          title="Stock de la Table"
+          value={(capacity ? (capacity / 20) * 100 : "0") + "%"}
         />
         <img
           className="w-10 h-10 inline-block align-middle"
