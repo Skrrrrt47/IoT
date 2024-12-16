@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import { Table } from "../types/type";
 import CardTables from "../components/CardTables";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [data, setData] = useState<Table[] | null>(null);
-  const router = useRouter();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,17 +20,24 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const handleClick = (id: number) => {
-    router.push(`/backoffice/tables?tableId=${id}`);
-  }
-
   return (
-    <div className="min-h-screen flex flex-row items-center justify-center p-6 gap-6 bg-gray-800">
-      {data && data.map((table: Table) => (
-        <button key={table.id} onClick={() => handleClick(table.id)}>
-          <CardTables  status={table.status} capacity={table.capacity} id={table.id} />
-        </button>
-      ))}
+    <div className="min-h-screen flex flex-col items-center bg-gray-800 text-white p-6">
+      <h1 className="text-3xl font-bold mb-8 animate-fade-in">Table Overview</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+        {data &&
+          data.map((table: Table) => (
+            <div
+              key={table.id}
+              className="w-full rounded-lg transition-transform duration-300 hover:scale-105"
+            >
+              <CardTables
+                status={table.status}
+                capacity={table.capacity}
+                id={table.id}
+              />
+            </div>
+          ))}
+      </div>
     </div>
   );
 }
