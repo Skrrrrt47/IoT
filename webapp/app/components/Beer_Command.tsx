@@ -6,13 +6,11 @@ import { useRouter } from "next/navigation";
 
 export default function Beer_Command({ tableId }: { tableId: string }) {
   const [data, setData] = useState<Beer[] | null>(null);
-  const [gptResponse, setGptResponse] = useState<string | null>(null); // To store GPT response
-  const [loading, setLoading] = useState<boolean>(false); // For loading state
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({}); // Map beer ID to quantity
   const router = useRouter();
 
-  const [number, setNumber] = useState(1);
-
   async function handleOrder(beerId: number, price: number) {
+    const quantity = quantities[beerId] || 1; // Default to 1 if no quantity is set
     const response = await fetch("http://localhost:3001/commands", {
       method: "POST",
       headers: {
@@ -21,9 +19,9 @@ export default function Beer_Command({ tableId }: { tableId: string }) {
       body: JSON.stringify({
         tableId: parseInt(tableId),
         beerId: beerId,
-        nbBeers: number,
+        nbBeers: quantity,
         date: new Date().toISOString(),
-        price: number * price,
+        price: quantity * price,
       }),
     });
     const responseJson = await response.json();
@@ -31,44 +29,12 @@ export default function Beer_Command({ tableId }: { tableId: string }) {
     router.push(`/tables/order?orderId=${responseJson.id}`);
   }
 
-async function fetchGPTResponse(prompt: string) {
-  setLoading(true);
-  try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo", // Remplacez par "gpt-4" si vous avez accès à GPT-4
-        messages: [
-          { role: "system", content: "You are a helpful assistant." }, // Contexte
-          { role: "user", content: prompt }, // Message utilisateur
-        ],
-        temperature: 1,
-        max_tokens: 1000,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(`API Error: ${response.status} - ${errorMessage}`);
-    }
-
-    const responseJson = await response.json();
-    if (responseJson.choices && responseJson.choices.length > 0) {
-      setGptResponse(responseJson.choices[0].message.content.trim());
-    } else {
-      throw new Error("No choices found in API response.");
-    }
-  } catch (error) {
-    console.error("Error fetching GPT response:", error);
-    setGptResponse("An error occurred while fetching the response.");
-  } finally {
-    setLoading(false);
-  }
-}
+  const handleQuantityChange = (beerId: number, newQuantity: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [beerId]: newQuantity,
+    }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,8 +70,10 @@ async function fetchGPTResponse(prompt: string) {
                 <p className="text-sm">{beer.description}</p>
                 <p className="text-lg font-semibold mt-2">{beer.price} €</p>
                 <select
-                  value={number}
-                  onChange={(e) => setNumber(parseInt(e.target.value))}
+                  value={quantities[beer.id] || 1} // Default to 1 if not set
+                  onChange={(e) =>
+                    handleQuantityChange(beer.id, parseInt(e.target.value))
+                  }
                   className="mt-4 w-full border border-gray-200 rounded-lg p-2"
                 >
                   <option value="1">1</option>
