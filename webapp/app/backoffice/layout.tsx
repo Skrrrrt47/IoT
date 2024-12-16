@@ -51,6 +51,11 @@ export default function RootLayout({
                   Finance
                 </span>
               </Link>
+              <Link href="/backoffice/menu">
+                <span className="cursor-pointer text-lg hover:text-gray-400">
+                  Menu
+                </span>
+              </Link>
               <Link href="/backoffice/support">
                 <span className="cursor-pointer text-lg hover:text-gray-400">
                   Support
