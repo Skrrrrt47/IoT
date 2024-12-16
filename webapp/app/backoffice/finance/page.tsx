@@ -1,5 +1,5 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
 import { useSearchParams } from "next/navigation";
 import StatBox from "@/app/components/StatBox";
 import { Beer, Command } from "@/app/types/type";
@@ -14,6 +14,7 @@ function TableDetails() {
   const [popularBeer, setPopularBeer] = useState<Beer | null>(null);
   const [nbTables, setNbTables] = useState(0);
   const [nbAvailableTables, setNbAvailableTables] = useState(0);
+
   function getMostFrequentBeerId(commands: Command[]): number | null {
     const beerCounts: Record<number, number> = {};
     for (const command of commands) {
@@ -46,32 +47,26 @@ function TableDetails() {
   }, []);
 
   useEffect(() => {
-    const fetchCommands = async () => {
+    const fetchTables = async () => {
       try {
         const response = await fetch(`http://localhost:3001/tables/count`);
         const data = await response.json();
         setNbTables(data.count);
-        try {
-          const response = await fetch(`http://localhost:3001/tables`);
-          const data = await response.json();
-          let availableTablesCounter = 0;
-          data.forEach((element: { status: boolean }) => {
-            element.status ? availableTablesCounter++ : 0;
-          });
-          setNbAvailableTables(availableTablesCounter);
-        } catch (error) {
-          console.error("Error fetching commands:", error);
-        }
+        const responseAvailable = await fetch(`http://localhost:3001/tables`);
+        const tables = await responseAvailable.json();
+        const availableTables = tables.filter(
+          (table: { status: boolean }) => table.status
+        ).length;
+        setNbAvailableTables(availableTables);
       } catch (error) {
-        console.error("Error fetching commands:", error);
+        console.error("Error fetching table data:", error);
       }
     };
-    fetchCommands();
+    fetchTables();
   }, []);
 
   useEffect(() => {
     if (commands) {
-      console.log(commands);
       const total = commands.reduce((acc, command) => acc + command.price, 0);
       setTotal(total);
       const capacity = commands.reduce(
@@ -94,33 +89,35 @@ function TableDetails() {
   }, [commands]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-start items-center bg-gray-700">
-      <h1 className="text-2xl font-bold mb-4 text-white">All Tables</h1>
-      <div className="flex flex-row items-center gap-10">
-        <img
-          className="w-10 h-10 inline-block align-middle"
-          src={"/arrow-bar-left-svgrepo-com.svg"}
-        />
-        <StatBox icon={"/circle.svg"} title="CA Total" value={total} />
-        <StatBox
-          icon={"/circle.svg"}
-          title="Total des Bières Servies"
-          value={capacity}
-        />
-        <StatBox
-          icon={"/circle.svg"}
-          title="Bière la plus Populaire"
-          value={popularBeer?.name ?? ""}
-        />
-        <StatBox
-          icon={"/circle.svg"}
-          title="Tables Opérationnelles"
-          value={nbTables ? nbAvailableTables + "/" + nbTables : ""}
-        />
-        <img
-          className="w-10 h-10 inline-block align-middle"
-          src={"/arrow-right-line.svg"}
-        />
+    <div className="min-h-screen flex flex-col items-center bg-gray-800 text-gray-800 p-6">
+      <h1 className="text-3xl font-bold mb-8 animate-fade-in">All Tables Overview</h1>
+      <div className="flex items-center gap-6 w-full max-w-6xl">
+        {/* Left navigation arrow */}
+
+        {/* StatBoxes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+            <StatBox icon={"/circle.svg"} title="Growth Revenue" value={total + " €"} />
+          </div>
+          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+            <StatBox icon={"/circle.svg"} title="Beer Served" value={capacity} />
+          </div>
+          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+            <StatBox
+              icon={"/circle.svg"}
+              title="Most Popular Beer"
+              value={popularBeer?.name ?? ""}
+            />
+          </div>
+          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+            <StatBox
+              icon={"/circle.svg"}
+              title="Operational Tables"
+              value={nbTables ? nbAvailableTables + "/" + nbTables : ""}
+            />
+          </div>
+        </div>
+
       </div>
     </div>
   );

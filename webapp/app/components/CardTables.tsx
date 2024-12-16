@@ -71,7 +71,7 @@ export default function CardTables({ status, id, capacity }: { status: boolean; 
       <Divider />
       <CardFooter className="flex justify-between p-4 bg-gray-100 rounded-b-lg">
         <button
-          className={`${lockColor} text-white py-2 px-4 rounded-lg ${hoverLockColor} transition-colors duration-300`}
+          className={`${lockColor} py-2 px-4 rounded-lg ${hoverLockColor} transition-colors duration-300`}
           onClick={handleLockTable}
         >
           {lockText}
