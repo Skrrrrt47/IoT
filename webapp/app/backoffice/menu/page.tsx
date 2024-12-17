@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Beer } from "../../types/type";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { Beer } from '../../types/type';
+import { useRouter } from 'next/navigation';
 
 export default function Menu() {
   const [data, setData] = useState<Beer[] | null>(null);
@@ -10,7 +10,7 @@ export default function Menu() {
 
   const fetchBeers = async () => {
     try {
-      const response = await fetch("http://localhost:3001/beers");
+      const response = await fetch('http://localhost:3001/beers');
       const json = await response.json();
       setData(json);
       console.log(json);
@@ -22,18 +22,18 @@ export default function Menu() {
   const handleDelete = async (beerId: number) => {
     try {
       const response = await fetch(`http://localhost:3001/beers/${beerId}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
 
       if (response.ok) {
         alert(`Beer ${beerId} has been deleted.`);
         fetchBeers(); // Refresh the beer list
       } else {
-        alert("Failed to delete the beer.");
+        alert('Failed to delete the beer.');
       }
     } catch (error) {
-      console.error("Error deleting beer:", error);
-      alert("An error occurred while deleting the beer.");
+      console.error('Error deleting beer:', error);
+      alert('An error occurred while deleting the beer.');
     }
   };
 
@@ -42,8 +42,7 @@ export default function Menu() {
   };
 
   const handleAdd = () => {
-    // Redirect to an "Add Beer" page or open a modal for adding
-    router.push("/backoffice/menu/add");
+    router.push('/backoffice/menu/add');
   };
 
   useEffect(() => {
@@ -52,7 +51,12 @@ export default function Menu() {
 
   return (
     <div className="bg-gray-800 min-h-screen flex flex-col items-center text-white p-6 relative">
-      <h1 className="text-3xl font-bold mb-8 animate-fade-in">Menu Management</h1>
+      {/* Titre */}
+      <h1 className="text-3xl font-bold mb-8 animate-fade-in">
+        Menu Management
+      </h1>
+
+      {/* Liste des bières */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {data &&
           data.map((beer: Beer) => (
@@ -86,15 +90,16 @@ export default function Menu() {
               </div>
             </div>
           ))}
-          {/* Add Beer button */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-            <button
-              onClick={handleAdd}
-              className="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-300 shadow-lg"
-            >
-              Add Beer
-            </button>
-          </div>
+      </div>
+
+      {/* Bouton Add Beer */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+        <button
+          onClick={handleAdd}
+          className="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-300 shadow-lg"
+        >
+          Add Beer
+        </button>
       </div>
     </div>
   );
