@@ -1,56 +1,70 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { Command, Beer } from "@/app/types/type";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Command, Beer } from '@/app/types/type';
 
 export default function OrderPayment() {
   const searchParams = useSearchParams();
-
-  const orderId = searchParams.get("orderId");
-  const [orderDetails, setOrderDetails] = useState<Command | null>(null);
-  const [beerDetails, setBeerDetails] = useState<Beer | null>(null);
   const router = useRouter();
 
+  const orderId = searchParams.get('orderId');
+  const [orderDetails, setOrderDetails] = useState<Command | null>(null);
+  const [beerDetails, setBeerDetails] = useState<Beer | null>(null);
+
+  // Fetch order details
   useEffect(() => {
     if (orderId) {
       const fetchOrderDetails = async () => {
         try {
-          const response = await fetch(`http://localhost:3001/commands/${orderId}`);
+          const response = await fetch(
+            `http://localhost:3001/commands/${orderId}`
+          );
           const data = await response.json();
           setOrderDetails(data);
         } catch (error) {
-          console.error("Error fetching order details:", error);
+          console.error('Error fetching order details:', error);
         }
       };
       fetchOrderDetails();
     }
   }, [orderId]);
 
+  // Fetch beer details
   useEffect(() => {
     if (orderDetails?.beerId) {
       const fetchBeerDetails = async () => {
         try {
-          const response = await fetch(`http://localhost:3001/beers/${orderDetails.beerId}`);
+          const response = await fetch(
+            `http://localhost:3001/beers/${orderDetails.beerId}`
+          );
           const data = await response.json();
-          console.log(data);
           setBeerDetails(data);
         } catch (error) {
-          console.error("Error fetching beer details:", error);
+          console.error('Error fetching beer details:', error);
         }
       };
       fetchBeerDetails();
     }
   }, [orderDetails]);
 
-  const [paymentAmount, setPaymentAmount] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState("");
+  // Gérer l'appui sur Escape pour revenir à la page précédente
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        router.back(); // Revenir à la page précédente
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape); // Cleanup l'event listener
+    };
+  }, [router]);
 
   const handlePayment = async () => {
-    // add payment logic here
-
-    router.push("/tables/order/done?tableId=" + orderDetails?.tableId);
+    router.push('/tables/order/done?tableId=' + orderDetails?.tableId);
   };
 
   return (
@@ -62,13 +76,17 @@ export default function OrderPayment() {
           <div className="flex gap-4">
             {/* Left Section - Order Details */}
             <div className="flex-1">
-              <h2 className="text-lg font-semibold text-black">Table ID: {orderDetails.tableId}</h2>
-              <h2 className="text-lg font-semibold text-black">Order ID: {orderId}</h2>
+              <h2 className="text-lg font-semibold text-black">
+                Table ID: {orderDetails.tableId}
+              </h2>
+              <h2 className="text-lg font-semibold text-black">
+                Order ID: {orderId}
+              </h2>
               <ul className="my-4 border-t border-gray-200 pt-4">
                 <li className="flex flex-col text-gray-700 gap-2">
-                  <strong><span className="">Beer: {beerDetails.name}</span></strong>
-                  <strong><span>Quantity: {orderDetails.nbBeers}</span></strong>
-                  <strong><span>Price per unit: {beerDetails.price}</span></strong>
+                  <strong>Beer: {beerDetails.name}</strong>
+                  <strong>Quantity: {orderDetails.nbBeers}</strong>
+                  <strong>Price per unit: {beerDetails.price} €</strong>
                 </li>
               </ul>
               <div className="text-lg font-bold mb-4 text-black">
@@ -100,7 +118,7 @@ export default function OrderPayment() {
             </div>
           </div>
         ) : (
-          <p className="text-white">Loading order details...</p>
+          <p className="text-gray-700">Loading order details...</p>
         )}
       </div>
     </div>

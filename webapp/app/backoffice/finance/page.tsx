@@ -1,126 +1,176 @@
-"use client";
-import React from "react";
-import { useSearchParams } from "next/navigation";
-import StatBox from "@/app/components/StatBox";
-import { Beer, Command } from "@/app/types/type";
-import { useState, useEffect } from "react";
+'use client';
 
-function TableDetails() {
-  const searchParams = useSearchParams();
-  const [commands, setCommands] = useState<Command[] | null>(null);
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import StatBox from '@/app/components/StatBox';
+import { Beer, Command } from '@/app/types/type';
 
-  const [total, setTotal] = useState(0);
-  const [capacity, setCapacity] = useState(0);
+export default function Finance() {
+  const router = useRouter();
+  const [commands, setCommands] = useState<Command[]>([]);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalBeers, setTotalBeers] = useState(0);
   const [popularBeer, setPopularBeer] = useState<Beer | null>(null);
   const [nbTables, setNbTables] = useState(0);
   const [nbAvailableTables, setNbAvailableTables] = useState(0);
+  const [latestCommands, setLatestCommands] = useState<Command[]>([]);
 
-  function getMostFrequentBeerId(commands: Command[]): number | null {
-    const beerCounts: Record<number, number> = {};
-    for (const command of commands) {
-      beerCounts[command.beerId] = (beerCounts[command.beerId] || 0) + 1;
-    }
-    let maxCount = 0;
-    let mostFrequentBeerId: number | null = null;
-
-    for (const [beerId, count] of Object.entries(beerCounts)) {
-      if (count > maxCount) {
-        maxCount = count;
-        mostFrequentBeerId = Number(beerId);
-      }
-    }
-
-    return mostFrequentBeerId;
-  }
-
+  // Récupération des commandes
   useEffect(() => {
     const fetchCommands = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/commands/`);
+        const response = await fetch('http://localhost:3001/commands');
         const data = await response.json();
         setCommands(data);
+
+        // Calcul des statistiques
+        calculateStats(data);
+
+        // Historique des dernières commandes
+        setLatestCommands(data.slice(0, 10)); // Les 10 commandes les plus récentes
       } catch (error) {
-        console.error("Error fetching commands:", error);
+        console.error('Error fetching commands:', error);
       }
     };
+
     fetchCommands();
   }, []);
 
+  // Récupération des informations sur les tables
   useEffect(() => {
     const fetchTables = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/tables/count`);
-        const data = await response.json();
-        setNbTables(data.count);
-        const responseAvailable = await fetch(`http://localhost:3001/tables`);
-        const tables = await responseAvailable.json();
+        const response = await fetch('http://localhost:3001/tables');
+        const tables = await response.json();
+
         const availableTables = tables.filter(
           (table: { status: boolean }) => table.status
         ).length;
+
+        setNbTables(tables.length);
         setNbAvailableTables(availableTables);
       } catch (error) {
-        console.error("Error fetching table data:", error);
+        console.error('Error fetching tables:', error);
       }
     };
+
     fetchTables();
   }, []);
 
-  useEffect(() => {
-    if (commands) {
-      const total = commands.reduce((acc, command) => acc + command.price, 0);
-      setTotal(total);
-      const capacity = commands.reduce(
-        (acc, command) => acc + command.nbBeers,
-        0
-      );
-      setCapacity(capacity);
-      const mostFrequentBeerId = getMostFrequentBeerId(commands);
-      if (mostFrequentBeerId) {
-        const fetchPopularBeer = async () => {
-          const response = await fetch(
-            `http://localhost:3001/beers/${mostFrequentBeerId}`
-          );
-          const data = await response.json();
-          setPopularBeer(data);
-        };
-        fetchPopularBeer();
-      }
+  // Fonction pour calculer les statistiques
+  const calculateStats = (commands: Command[]) => {
+    const total = commands.reduce((acc, command) => acc + command.price, 0);
+    const beersServed = commands.reduce(
+      (acc, command) => acc + command.nbBeers,
+      0
+    );
+
+    setTotalRevenue(total);
+    setTotalBeers(beersServed);
+
+    const beerCounts: Record<number, number> = {};
+    commands.forEach((command) => {
+      beerCounts[command.beerId] = (beerCounts[command.beerId] || 0) + 1;
+    });
+
+    const mostPopularBeerId = Object.keys(beerCounts).reduce((a, b) =>
+      beerCounts[Number(a)] > beerCounts[Number(b)] ? a : b
+    );
+
+    fetchPopularBeer(Number(mostPopularBeerId));
+  };
+
+  // Récupérer les détails de la bière la plus populaire
+  const fetchPopularBeer = async (beerId: number) => {
+    try {
+      const response = await fetch(`http://localhost:3001/beers/${beerId}`);
+      const data = await response.json();
+      setPopularBeer(data);
+    } catch (error) {
+      console.error('Error fetching popular beer:', error);
     }
-  }, [commands]);
+  };
+
+  const returnBack = () => {
+    router.push('/backoffice');
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-800 text-gray-800 p-6">
-      <h1 className="text-3xl font-bold mb-8 animate-fade-in">All Tables Overview</h1>
-      <div className="flex items-center gap-6 w-full max-w-6xl">
-        {/* Left navigation arrow */}
+    <div className="min-h-screen flex flex-col items-center bg-gray-800 text-white p-6">
+      {/* Bouton Retour */}
+      <div className="absolute top-6 left-6">
+        <button
+          onClick={returnBack}
+          className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-md"
+        >
+          ← Back
+        </button>
+      </div>
 
-        {/* StatBoxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox icon={"/circle.svg"} title="Growth Revenue" value={total + " €"} />
-          </div>
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox icon={"/circle.svg"} title="Beer Served" value={capacity} />
-          </div>
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox
-              icon={"/circle.svg"}
-              title="Most Popular Beer"
-              value={popularBeer?.name ?? ""}
-            />
-          </div>
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox
-              icon={"/circle.svg"}
-              title="Operational Tables"
-              value={nbTables ? nbAvailableTables + "/" + nbTables : ""}
-            />
-          </div>
+      {/* Titre */}
+      <h1 className="text-3xl font-bold mb-8 animate-fade-in">
+        Finance Overview
+      </h1>
+
+      {/* Statistiques */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mb-8">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+          <StatBox
+            icon={'/circle.svg'}
+            title="Growth Revenue"
+            value={totalRevenue + ' €'}
+          />
         </div>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+          <StatBox
+            icon={'/circle.svg'}
+            title="Beer Served"
+            value={totalBeers}
+          />
+        </div>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+          <StatBox
+            icon={'/circle.svg'}
+            title="Most Popular Beer"
+            value={popularBeer?.name ?? 'N/A'}
+          />
+        </div>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+          <StatBox
+            icon={'/circle.svg'}
+            title="Operational Tables"
+            value={`${nbAvailableTables}/${nbTables}`}
+          />
+        </div>
+      </div>
 
+      {/* Historique des commandes */}
+      <div className="w-full max-w-6xl bg-gray-100 p-6 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Order History</h2>
+        {latestCommands.length > 0 ? (
+          <ul className="space-y-3">
+            {latestCommands.map((command) => (
+              <li
+                key={command.id}
+                className="border-b border-gray-300 pb-2 flex justify-between text-gray-700"
+              >
+                <span>
+                  <strong>Order ID:</strong> {command.id} |{' '}
+                  <strong>Table:</strong> {command.tableId} |{' '}
+                  <strong>Beers:</strong> {command.nbBeers}
+                </span>
+                <span>
+                  <strong>Price:</strong> {command.price} € |{' '}
+                  <strong>Date:</strong>{' '}
+                  {new Date(command.date).toLocaleString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">No recent orders available.</p>
+        )}
       </div>
     </div>
   );
 }
-
-export default TableDetails;

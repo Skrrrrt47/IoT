@@ -1,7 +1,21 @@
-import { Card, CardHeader, CardBody, CardFooter, Divider } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Divider,
+} from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
 
-export default function CardTables({ status, id, capacity }: { status: boolean; id: number; capacity: number }) {
+export default function CardTables({
+  status,
+  id,
+  capacity,
+}: {
+  status: boolean;
+  id: number;
+  capacity: number;
+}) {
   const router = useRouter();
 
   const handleClickManage = () => {
@@ -11,9 +25,9 @@ export default function CardTables({ status, id, capacity }: { status: boolean; 
   const handleLockTable = async () => {
     try {
       const response = await fetch(`http://localhost:3001/tables/${id}`, {
-        method: "PATCH",
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           id: id,
@@ -33,15 +47,14 @@ export default function CardTables({ status, id, capacity }: { status: boolean; 
         alert(`Failed to lock table ${id}.`);
       }
     } catch (error) {
-      console.error("Error locking table:", error);
-      alert("An error occurred while locking the table.");
+      console.error('Error locking table:', error);
+      alert('An error occurred while locking the table.');
     }
   };
 
-  const lockColor = status ? "text-red-500" : "text-green-500";
-  const hoverLockColor = status ? "hover:bg-red-700" : "hover:bg-green-700";
-  const lockText = status ? "Lock Table" : "Unlock Table";
-
+  const lockColor = status ? 'text-red-500' : 'text-green-500';
+  const hoverLockColor = status ? 'hover:bg-red-700' : 'hover:bg-green-700';
+  const lockText = status ? 'Lock Table' : 'Unlock Table';
 
   return (
     <Card className="max-w-[400px] bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -56,15 +69,15 @@ export default function CardTables({ status, id, capacity }: { status: boolean; 
             <p className="text-sm font-semibold text-gray-500">Status</p>
             <p
               className={`text-lg font-bold ${
-                status ? "text-green-500" : "text-red-500"
+                status ? 'text-green-500' : 'text-red-500'
               }`}
             >
-              {status ? "On" : "Off"}
+              {status ? 'On' : 'Off'}
             </p>
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-500">Capacity</p>
-            <p className="text-lg font-bold text-gray-800">{capacity}</p>
+            <p className="text-lg font-bold text-gray-800">{capacity} L</p>
           </div>
         </div>
       </CardBody>
