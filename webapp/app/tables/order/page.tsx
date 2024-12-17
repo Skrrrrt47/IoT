@@ -44,9 +44,6 @@ export default function OrderPayment() {
     }
   }, [orderDetails]);
 
-  const [paymentAmount, setPaymentAmount] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState("");
-
   const handlePayment = async () => {
     // add payment logic here
 

@@ -4,7 +4,7 @@ import Beer_Command from "../components/Beer_Command";
 
 
 
-function page() {
+function Page() {
   const searchParams = useSearchParams();
   const tableId = searchParams.get('tableId');
 
@@ -15,4 +15,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
