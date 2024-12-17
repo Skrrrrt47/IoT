@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
-import { useSearchParams } from "next/navigation";
 import StatBox from "@/app/components/StatBox";
 import { Beer, Command } from "@/app/types/type";
 import { useState, useEffect } from "react";
 
 function TableDetails() {
-  const searchParams = useSearchParams();
   const [commands, setCommands] = useState<Command[] | null>(null);
 
   const [total, setTotal] = useState(0);

@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const { role, userId } = await req.json();
   console.log(role, userId);
   const client = await clerkClient();

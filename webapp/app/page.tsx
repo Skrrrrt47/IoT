@@ -8,7 +8,7 @@ export default function TableList() {
   const router = useRouter();
   const [tables, setTables] = useState<Table[]>([]);
 
-  const { isSignedIn, user, isLoaded } = useUser();
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
     const fetchTables = async () => {
@@ -39,8 +39,6 @@ export default function TableList() {
   if (!user) {
     return <p>User not found. Please sign in.</p>;
   }
-
-  const userRole = user.publicMetadata.role;
 
   // Redirect if userRole is not "client"
 

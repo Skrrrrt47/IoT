@@ -1,11 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Beer, Command } from "../../types/type";
-import { comma } from "postcss/lib/list";
-import { div } from "framer-motion/client";
+import { useEffect } from "react";
 
 export default function Home() {
-  const [data, setData] = useState<Command[] | null>(null);
   useEffect(() => {
     // on pourrait insulter des gens ici, ils le verront pas... dans le groupe y'a un gros chimpanzé
   }, []);
