@@ -95,7 +95,7 @@ function TableDetails() {
 
   return (
     <div className="min-h-screen flex flex-col justify-start items-center bg-gray-700">
-      <h1 className="text-2xl font-bold mb-4 text-white">All Tables</h1>
+      <h1 className="text-2xl font-bold mb-4 text-white">Toutes les Tables</h1>
       <div className="flex flex-row items-center gap-10">
         <img
           className="w-10 h-10 inline-block align-middle"
