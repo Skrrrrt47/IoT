@@ -88,17 +88,27 @@ function TableDetails() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-800 text-gray-800 p-6">
-      <h1 className="text-3xl font-bold mb-8 animate-fade-in">All Tables Overview</h1>
+      <h1 className="text-3xl font-bold mb-8 animate-fade-in">
+        All Tables Overview
+      </h1>
       <div className="flex items-center gap-6 w-full max-w-6xl">
         {/* Left navigation arrow */}
 
         {/* StatBoxes */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox icon={"/circle.svg"} title="Growth Revenue" value={total + " €"} />
+            <StatBox
+              icon={"/circle.svg"}
+              title="Total Revenue"
+              value={total + " €"}
+            />
           </div>
           <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox icon={"/circle.svg"} title="Beer Served" value={capacity} />
+            <StatBox
+              icon={"/circle.svg"}
+              title="Beer Served"
+              value={capacity}
+            />
           </div>
           <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
             <StatBox
@@ -115,7 +125,6 @@ function TableDetails() {
             />
           </div>
         </div>
-
       </div>
     </div>
   );

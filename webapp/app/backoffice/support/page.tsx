@@ -12,12 +12,12 @@ export default function Home() {
         <form>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nom Prénom
+              Sirname Fitstname
             </label>
             <input
               type="text"
               id="name"
-              placeholder="Prérémplir avec le Nom de la personne"
+              placeholder="Owner's Name"
               className="w-full border text-black border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
@@ -29,14 +29,14 @@ export default function Home() {
             <input
               type="email"
               id="email"
-              placeholder="Prérémplir avec les infos"
+              placeholder="Owner's email"
               className="w-full border text-black border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Sélectionner des tables
+              Select tables
             </label>
             <input
               type="text"
@@ -51,7 +51,7 @@ export default function Home() {
             </label>
             <textarea
               id="message"
-              placeholder="Value"
+              placeholder="I have a question about..."
               className="w-full border text-black border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
             ></textarea>
           </div>

@@ -102,20 +102,30 @@ function TableDetails() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-800 text-gray-800 p-6">
-      <h1 className="text-3xl font-bold mb-8 animate-fade-in">Table Details n°{tableId}</h1>
+      <h1 className="text-3xl font-bold mb-8 animate-fade-in text-white">
+        Table Details n°{tableId}
+      </h1>
       <div className="flex items-center gap-6 w-full max-w-6xl">
         {/* Flèche pour la table précédente */}
         <button
           className="w-12 h-12 flex items-center justify-center bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-700 transition-transform duration-300 hover:scale-110"
           onClick={() => navigateToTable("prev")}
         >
-          <img src="/arrow-bar-left-svgrepo-com.svg" alt="Previous Table" className="w-6 h-6" />
+          <img
+            src="/arrow-bar-left-svgrepo-com.svg"
+            alt="Previous Table"
+            className="w-6 h-6"
+          />
         </button>
 
         {/* StatBoxes */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
-            <StatBox icon="/circle.svg" title="Growth Revenue" value={total + " €"} />
+            <StatBox
+              icon="/circle.svg"
+              title="Table revenue"
+              value={total + " €"}
+            />
           </div>
           <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
             <StatBox icon="/circle.svg" title="Beer served" value={orders} />
@@ -130,7 +140,7 @@ function TableDetails() {
           <div className="bg-gray-100 p-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
             <StatBox
               icon="/circle.svg"
-              title="Stock de la Table"
+              title="Table reserves"
               value={(capacity ? (capacity / 20) * 100 : "0") + "%"}
             />
           </div>
@@ -141,7 +151,11 @@ function TableDetails() {
           className="w-12 h-12 flex items-center justify-center bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-700 transition-transform duration-300 hover:scale-110"
           onClick={() => navigateToTable("next")}
         >
-          <img src="/arrow-right-line.svg" alt="Next Table" className="w-6 h-6" />
+          <img
+            src="/arrow-right-line.svg"
+            alt="Next Table"
+            className="w-6 h-6"
+          />
         </button>
       </div>
     </div>
